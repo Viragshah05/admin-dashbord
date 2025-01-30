@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Virag",
+      "email": "dev@test.com",
+      "role": "user"
+    },
+    {
+      "id": 1,
+      "name": "Virag",
+      "email": "dev@test.com",
+      "role": "user"
+    },
+    {
+      "id": 1,
+      "name": "Virag",
+      "email": "dev@test.com",
+      "role": "user"
+    }
+  ]
+}
