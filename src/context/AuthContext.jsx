@@ -6,29 +6,16 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  return (
-    <AuthContext.Provider value={{ user, setUser }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const NavigateWrapper = ({ children }) => {
-  const navigate = useNavigate();
-  const { user, setUser } = useContext(AuthContext);
-
   const login = (email, password) => {
     if (email === "admin@admin.com" && password === "admin") {
       setUser({ email, role: "admin" });
-      navigate("/admin-dashboard");
     } else {
-      alert("You have entered an invalid email and password");
+      alert("Invalid email or password");
     }
   };
 
   const logout = () => {
     setUser(null);
-    navigate("/");
   };
 
   return (
@@ -36,4 +23,16 @@ export const NavigateWrapper = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const ProtectedRoute = ({ children }) => {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  if (!user) {
+    navigate("/");
+    return null;
+  }
+
+  return children;
 };
