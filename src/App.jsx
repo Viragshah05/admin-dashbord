@@ -1,28 +1,70 @@
-import { BrowserRouter as Route, Router, Routes } from "react-router-dom";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+  Routes,
+} from "react-router-dom";
 import "./App.css";
-import { AuthProvider, ProtectedRoute } from "./context/AuthContext";
-import Login from "./components/login/Login";
-import AdminDashboard from "./components/admin-dashbord/AdminDashboard";
-import Product from "./components/product/product";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import RootLayout from "./layout/RootLayout";
+import ProductLayout from "./layout/ProductLayout";
+import ProductInfo from "./components/product/productInfo";
+import InquiryForm from "./components/product/inquiryForm";
+import JobsLayout from "./layout/JobsLayout";
+import JobOpening, { jobDetailsLoader } from "./components/jobs/jobOpening";
+import Jobs, { JobLoader } from "./pages/Jobs";
 
 function App() {
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Login />} />
+  const routerList = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<RootLayout />}>
+        <Route index element={<Login />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="home" element={<Home />} />
+        <Route path="about" element={<About />} />
+        <Route path="/product" element={<ProductLayout />}>
+          <Route path="info" element={<ProductInfo />} />
+          <Route path="form" element={<InquiryForm />} />
+        </Route>
+        <Route path="/jobs" element={<JobsLayout />}>
+          <Route index element={<Jobs />} loader={JobLoader} />
           <Route
-            path="/admin-dashboard"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
+            path=":id"
+            element={<JobOpening />}
+            loader={jobDetailsLoader}
           />
-          <Route path="/product" element={<Product />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+        </Route>
+      </Route>
+    )
+  );
+  return (
+    <div>
+      <RouterProvider router={routerList} />
+      {/* <Navbar />
+      <div className="container">
+        <Routes></Routes>
+      </div> */}
+      {/* <Routes>
+        <Route path="/" element={<RootLayout />}>
+          <Route index element={<Login />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="home" element={<Home />} />
+          <Route path="about" element={<About />} />
+          <Route path="/product" element={<ProductLayout />}>
+            <Route path="info" element={<ProductInfo />} />
+            <Route path="form" element={<InquiryForm />} />
+          </Route>
+          <Route path="/jobs" element={<JobsLayout />} loader={JobLoader}>
+            <Route index element={<Jobs />} />
+            <Route path=":id" element={<JobOpening />} />
+          </Route>
+        </Route>
+      </Routes> */}
+    </div>
   );
 }
 
