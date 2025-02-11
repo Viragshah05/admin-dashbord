@@ -17,14 +17,23 @@ import InquiryForm from "./components/product/inquiryForm";
 import JobsLayout from "./layout/JobsLayout";
 import JobOpening, { jobDetailsLoader } from "./components/jobs/jobOpening";
 import Jobs, { JobLoader } from "./pages/Jobs";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 
 function App() {
   const routerList = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<RootLayout />}>
-        <Route index element={<Login />} />
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="home" element={<Home />} />
+        <Route index element={<Home />} />
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/login" element={<Login />} />
         <Route path="about" element={<About />} />
         <Route path="/product" element={<ProductLayout />}>
           <Route path="info" element={<ProductInfo />} />
@@ -43,27 +52,13 @@ function App() {
   );
   return (
     <div>
-      <RouterProvider router={routerList} />
+      <AuthProvider>
+        <RouterProvider router={routerList} />
+      </AuthProvider>
       {/* <Navbar />
       <div className="container">
         <Routes></Routes>
       </div> */}
-      {/* <Routes>
-        <Route path="/" element={<RootLayout />}>
-          <Route index element={<Login />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="home" element={<Home />} />
-          <Route path="about" element={<About />} />
-          <Route path="/product" element={<ProductLayout />}>
-            <Route path="info" element={<ProductInfo />} />
-            <Route path="form" element={<InquiryForm />} />
-          </Route>
-          <Route path="/jobs" element={<JobsLayout />} loader={JobLoader}>
-            <Route index element={<Jobs />} />
-            <Route path=":id" element={<JobOpening />} />
-          </Route>
-        </Route>
-      </Routes> */}
     </div>
   );
 }
