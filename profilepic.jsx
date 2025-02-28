@@ -155,3 +155,111 @@ const MapForm = () => {
 
 export default MapForm;
   
+
+// Dynamic form 
+import React from "react";
+import { Formik, FieldArray, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+// Validation schema using Yup
+const validationSchema = Yup.object().shape({
+  trusties: Yup.array()
+    .of(
+      Yup.object().shape({
+        name: Yup.string().required("Name is required"),
+        email: Yup.string().email("Invalid email").required("Email is required"),
+        profilePic: Yup.mixed().required("Profile picture is required"),
+      })
+    )
+    .min(1, "At least one trusty is required"),
+});
+
+// Initial form values
+const initialValues = {
+  trusties: [
+    {
+      name: "",
+      email: "",
+      profilePic: null,
+    },
+    {
+      name: "",
+      email: "",
+      profilePic: null,
+    },
+  ],
+};
+
+const TrustyForm = () => {
+  const handleSubmit = (values) => {
+    console.log("Form submitted:", values);
+    // Add your submission logic here (e.g., API call)
+  };
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ values, setFieldValue }) => (
+        <Form>
+          <FieldArray name="trusties">
+            {({ push, remove }) => (
+              <div>
+                {values.trusties.map((trusty, index) => (
+                  <div key={index} style={{ marginBottom: "20px", border: "1px solid #ccc", padding: "10px" }}>
+                    <h3>Trusty {index + 1}</h3>
+                    <div>
+                      <label>Name</label>
+                      <Field name={`trusties.${index}.name`} type="text" />
+                      <ErrorMessage name={`trusties.${index}.name`} component="div" className="error" />
+                    </div>
+                    <div>
+                      <label>Email</label>
+                      <Field name={`trusties.${index}.email`} type="email" />
+                      <ErrorMessage name={`trusties.${index}.email`} component="div" className="error" />
+                    </div>
+                    <div>
+                      <label>Profile Picture</label>
+                      <input
+                        type="file"
+                        onChange={(event) => {
+                          setFieldValue(`trusties.${index}.profilePic`, event.currentTarget.files[0]);
+                        }}
+                      />
+                      <ErrorMessage name={`trusties.${index}.profilePic`} component="div" className="error" />
+                    </div>
+                    {index > 1 && (
+                      <button type="button" onClick={() => remove(index)} style={{ marginTop: "10px" }}>
+                        Remove Trusty
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() =>
+                    push({
+                      name: "",
+                      email: "",
+                      profilePic: null,
+                    })
+                  }
+                  style={{ marginTop: "10px" }}
+                >
+                  Add Trusty
+                </button>
+              </div>
+            )}
+          </FieldArray>
+          <button type="submit" style={{ marginTop: "20px" }}>
+            Submit
+          </button>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+export default TrustyForm;
